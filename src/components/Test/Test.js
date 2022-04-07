@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { firstPuzzles } from '../../data/puzzles';
-import { createPuzzleGridFromVisual, getColumnAtPosition, getTrueCountsForSet } from '../../logic/puzzleParser';
+import { firstPuzzles } from '../../data/puzzleData';
+import { createPuzzleGridFromVisual, getColumnAtPosition, getTrueCountsForSet, getDataForRows, getDataForColumns, parseDataIntoPuzzle } from '../../logic/puzzleParser';
 import { RowOrCol } from '../../data/constants/puzzleConstants';
 
 const Test = () => {
@@ -20,6 +20,21 @@ const Test = () => {
         console.log('Testing getTrueCountsForSet()');
         let trueCounts2 = getTrueCountsForSet(testColumn2, RowOrCol.COLUMN, 2);
         console.log(trueCounts2);
+
+        // test getting data for all rows on grid
+        console.log('Testing getDataForRows()');
+        let rowsData = getDataForRows(testPuzzleGrid);
+        console.log(rowsData);
+
+        // test getting data for all columns on grid
+        console.log('Testing getDataForColumns()');
+        let columnsData = getDataForColumns(testPuzzleGrid);
+        console.log(columnsData);
+
+        // test parsing puzzle data into a puzzle for a game level
+        console.log('Testing parseDataIntoPuzzle()');
+        let testPuzzle = parseDataIntoPuzzle(firstPuzzles[0]);
+        console.log(testPuzzle);
     }, []);
 
     return (

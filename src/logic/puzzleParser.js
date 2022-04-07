@@ -1,5 +1,18 @@
 import { RowOrCol } from "../data/constants/puzzleConstants";
 
+export const parseDataIntoPuzzle = (puzzleData) => {
+    let grid = createPuzzleGridFromVisual(puzzleData.visual);
+    let puzzle = {
+        name: puzzleData.name,
+        xAcross: puzzleData.xAcross,
+        yAcross: puzzleData.yAcross,
+        grid: grid,
+        rowData: getDataForRows(grid),
+        columnData: getDataForColumns(grid)
+    };
+    return puzzle;
+}
+
 export const createPuzzleGridFromVisual = (visual) => {
     let grid = [];
     for (let y = 0; y < visual.length; y++) {
@@ -17,25 +30,38 @@ export const createPuzzleGridFromVisual = (visual) => {
     return grid;
 }
 
+export const getDataForColumns = (grid) => {
+    let columns = [];
+    for (let i = 0; i < grid[0].length; i++) {
+        let column = getColumnAtPosition(grid, i);
+        columns.push(column);
+    }
+    let data = getDataForSets(columns, RowOrCol.COLUMN);
+    return {columns: data};
+}
+
+export const getDataForRows = (grid) => {
+    let data = getDataForSets(grid, RowOrCol.ROW);
+    //return data;
+    return {rows: data};
+}
+
+const getDataForSets = (sets, rowOrCol) => {
+    let data = [];
+    for (let i = 0; i < sets.length; i++) {
+        data.push({
+            trueCounts: getTrueCountsForSet(sets[i], rowOrCol, i)
+        });
+    }
+    return data;
+}
+
 export const getColumnAtPosition = (grid, position) => {
     let column = [];
     for (let y = 0; y < grid.length; y++) {
         column.push(grid[y][position]);
     }
     return column;
-}
-
-const createGridPosition = (rowOrCol, otherIndex, newIndex) => {
-    if (rowOrCol === RowOrCol.COLUMN) {
-        return ({
-            x: otherIndex,
-            y: newIndex
-        })
-    }
-    return ({
-        x: newIndex,
-        y: otherIndex
-    })
 }
 
 export const getTrueCountsForSet = (set, rowOrCol, otherIndex) => {
@@ -70,4 +96,18 @@ export const getTrueCountsForSet = (set, rowOrCol, otherIndex) => {
         }
     }
     return counts;
+}
+
+
+const createGridPosition = (rowOrCol, otherIndex, newIndex) => {
+    if (rowOrCol === RowOrCol.COLUMN) {
+        return ({
+            x: otherIndex,
+            y: newIndex
+        })
+    }
+    return ({
+        x: newIndex,
+        y: otherIndex
+    })
 }
