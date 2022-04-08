@@ -5,7 +5,8 @@ import {
     fillCanvasBackground,
     drawCanvasGrid,
     getMousePos,
-    showCanvasCells
+    showSolutionGrid,
+    showPlayerGrid
 } from '../../logic/canvasLogic';
 
 const Canvas = ({puzzle, showSolution}) => {
@@ -30,9 +31,9 @@ const Canvas = ({puzzle, showSolution}) => {
         setCanvasSize(canvasRef, canvasInfo);
         fillCanvasBackground(canvasRef, "#ffffff");
         if (showSolution) {
-            showCanvasCells(canvasRef, puzzle.grid);
+            showSolutionGrid(canvasRef, canvasInfo, puzzle.grid);
         } else {
-            // show canvas cells with user grid
+            //showPlayerGrid(canvasRef, canvasInfo, playerGrid);
         }
         drawCanvasGrid(canvasRef, canvasInfo);
     }
