@@ -1,4 +1,5 @@
 import { CellSpace } from "../data/constants/puzzleConstants";
+import { DrawConstants } from "../data/constants/canvasConstants";
 
 export const getMousePos = (canvas, evt) => {
     var rect = canvas.getBoundingClientRect();
@@ -35,7 +36,7 @@ export const showSolutionGrid = (canvasRef, canvasInfo, grid) => {
                 y: y
             };
             if (cell === true) {
-                fillCell(canvas, canvasInfo, "#000000", position);
+                fillCell(canvas, canvasInfo, DrawConstants.FILL_COLOR, position);
             } // TODO consider logic for empty cell too?
         }
     }
@@ -56,13 +57,13 @@ export const showPlayerGrid = (canvasRef, canvasInfo, grid) => {
                 case CellSpace.EMPTY:
                     break;
                 case CellSpace.FILLED:
-                    fillCell(canvas, canvasInfo, "#000000", position);
+                    fillCell(canvas, canvasInfo, DrawConstants.FILL_COLOR, position);
                     break;
                 case CellSpace.WRONG:
-                    fillCell(canvas, canvasInfo, "#FF0000", position);
+                    fillCell(canvas, canvasInfo, DrawConstants.WRONG_COLOR, position);
                     break;
                 case CellSpace.XOUT:
-                    // logic to draw a gray x inside the square
+                    xOutCell(canvas, canvasInfo, position);
                     break;
             }
         }
@@ -91,6 +92,34 @@ export const fillCell = (canvas, canvasInfo, color, position) => {
     ctx.closePath();
 }
 
+export const xOutCell = (canvas, canvasInfo, position) => {
+    let ctx = canvas.getContext("2d");
+
+    let leftXStart = position.x * canvasInfo.cellLength;
+    let leftYStart = position.y * canvasInfo.cellLength;
+    let leftXEnd = leftXStart + canvasInfo.cellLength;
+    let leftYEnd = leftYStart + canvasInfo.cellLength;
+
+    let rightXStart = leftXEnd;
+    let rightYStart = leftYStart;
+    let rightXEnd = leftXStart;
+    let rightYEnd = leftYEnd;
+
+    ctx.beginPath();
+    ctx.lineWidth = DrawConstants.XOUT_WIDTH;
+    ctx.strokeStyle = DrawConstants.XOUT_COLOR;
+
+    ctx.moveTo(leftXStart, leftYStart);
+    ctx.lineTo(leftXEnd, leftYEnd);
+    ctx.stroke();
+    
+    ctx.moveTo(rightXStart, rightYStart);
+    ctx.lineTo(rightXEnd, rightYEnd);
+    ctx.stroke();
+
+    ctx.closePath();
+}
+
 export const drawCanvasGrid = (canvasRef, canvasInfo) => {
     let ctx = canvasRef.current.getContext("2d");
 
@@ -100,8 +129,8 @@ export const drawCanvasGrid = (canvasRef, canvasInfo) => {
     for (let x = 1; x < canvasInfo.width; x++) {
         let xPos = x * canvasInfo.cellLength;
         ctx.beginPath();
-        ctx.lineWidth = (x % 5 === 0) ? 3 : 1;
-        ctx.strokeStyle = (x % 5 === 0) ? "#39FF14" : "grey";
+        ctx.lineWidth = (x % 5 === 0) ? DrawConstants.DIVIDER_WIDTH : DrawConstants.LINE_WIDTH;
+        ctx.strokeStyle = (x % 5 === 0) ? DrawConstants.DIVIDER_COLOR : DrawConstants.LINE_COLOR;
         ctx.moveTo(xPos, yStart);
         ctx.lineTo(xPos, yEnd);
         ctx.stroke();
@@ -114,8 +143,8 @@ export const drawCanvasGrid = (canvasRef, canvasInfo) => {
     for (let y = 1; y < canvasInfo.height; y++) {
         let yPos = y * canvasInfo.cellLength;
         ctx.beginPath();
-        ctx.lineWidth = (y % 5 === 0) ? 3 : 1;
-        ctx.strokeStyle = (y % 5 === 0) ? "#39FF14" : "grey";
+        ctx.lineWidth = (y % 5 === 0) ? DrawConstants.DIVIDER_WIDTH : DrawConstants.LINE_WIDTH;
+        ctx.strokeStyle = (y % 5 === 0) ? DrawConstants.DIVIDER_COLOR : DrawConstants.LINE_COLOR;
         ctx.moveTo(xStart, yPos);
         ctx.lineTo(xEnd, yPos);
         ctx.stroke();
